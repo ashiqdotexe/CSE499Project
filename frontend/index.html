@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background:url('Image/Background.jpg');
+            background: url('Image/Background.jpg');
             background-size: cover;
             text-align: center;
         }
@@ -15,7 +15,7 @@
             margin-top: 50px;
         }
         .frame {
-             border: 5px solid #3a6f81;
+            border: 5px solid #3a6f81;
             border-radius: 10px;
             padding: 35px;
             background-color: white;
@@ -43,6 +43,7 @@
             border-radius: 25px;
             padding: 12px 24px;
             font-size: 18px;
+            margin-top: 10px;
         }
         .btn-custom:hover {
             background-color: #2b5460;
@@ -62,35 +63,6 @@
         }
     </style>
 </head>
-<script>
-  async function uploadVideo() {
-      const videoInput = document.getElementById("videoInput");
-      const queryInput = document.getElementById("queryInput");
-      const responseMessage = document.getElementById("responseMessage");
-
-      if (videoInput.files.length === 0 || queryInput.value === "") {
-          alert("Please select a video and enter a query.");
-          return;
-      }
-
-      const formData = new FormData();
-      formData.append("file", videoInput.files[0]);
-      formData.append("query", queryInput.value);
-
-      try {
-          const response = await fetch("http://127.0.0.1:8000/upload/", {
-              method: "POST",
-              body: formData
-          });
-
-          const data = await response.json();
-          responseMessage.textContent = data.message;
-      } catch (error) {
-          responseMessage.textContent = "Error uploading file.";
-          console.error("Upload failed:", error);
-      }
-  }
-</script>
 <body>
     <div class="container text-center">
         <div class="logo-container">
@@ -103,20 +75,50 @@
                 <div class="frame">
                     <i class="upload-icon bi bi-cloud-upload-fill"></i>
                     <p>Upload your Video Here</p>
-                    <input type="file" class="form-control">
+                    <input type="file" class="form-control" id="videoInput">
                 </div>
             </div>
-            <div class="col-md-4 d-flex align-items-center justify-content-center">
-                <button class="btn btn-custom">Input Your Text Query</button>
+            <div class="col-md-4 d-flex flex-column align-items-center justify-content-center">
+                <input type="text" class="form-control mb-2" id="queryInput" placeholder="Enter your query">
+                <button class="btn btn-custom" onclick="uploadVideo()">Upload & Process</button>
             </div>
             <div class="col-md-4">
                 <div class="frame">
                     <i class="output-icon bi bi-film"></i>
-                    <p>Your Expected Moment</p>
+                    <p id="responseMessage">Your Expected Moment</p>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        async function uploadVideo() {
+            const videoInput = document.getElementById("videoInput");
+            const queryInput = document.getElementById("queryInput");
+            const responseMessage = document.getElementById("responseMessage");
+
+            if (videoInput.files.length === 0 || queryInput.value.trim() === "") {
+                alert("Please select a video and enter a query.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", videoInput.files[0]);
+            formData.append("query", queryInput.value.trim());
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/upload/", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+                responseMessage.textContent = data.message;
+            } catch (error) {
+                responseMessage.textContent = "Error uploading file.";
+                console.error("Upload failed:", error);
+            }
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

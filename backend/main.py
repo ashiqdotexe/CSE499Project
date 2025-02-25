@@ -5,7 +5,7 @@ app = FastAPI()
 
 
 @app.post("/upload/")
-async def upload_video(file: UploadFile = File(...), query: str = Query(...)):
+async def upload_video(file: UploadFile = File(...), query: str = Query(None)):
     # Process video file (if needed)
     file_content = await file.read()
     file_size = len(file_content)  # Example: Get file size
